@@ -1,0 +1,12 @@
+name: ClanWars
+author: Obey
+main: de.obey.clanwars.Init
+version: 1.0
+depend:
+  - MultiClan
+
+commands:
+  clanwar:
+    aliases: [cw]
+  war:
+  stack:
