@@ -52,20 +52,19 @@ public final class StackCommand implements CommandExecutor {
         final ItemStack[] contents = player.getInventory().getContents();
 
         int changed = 0;
-        int i =0;
+        int i = 0;
 
         while(i < contents.length) {
             final ItemStack item = contents[i];
 
-            if (item != null && stackConfig.isStackable(item.getType())) {
-                int maxStack = item.getType() == Material.POTION ? 64 : item.getMaxStackSize();
+            if (item != null && (stackConfig.isStackable(item.getType()) || stackConfig.isStackArmor(item.getType()))) {
+                int maxStack = item.getType() == Material.POTION ? 64 : stackConfig.isStackArmor(item.getType()) ? stackConfig.getArmorMaxStack() : item.getMaxStackSize();
 
                 int needed = maxStack - item.getAmount();
                 int i2 = i + 1;
 
                 while (i2 < contents.length) {
                     final ItemStack itemSearch = contents[i2];
-
 
                     if (itemSearch != null && itemSearch.getType() != Material.AIR && itemSearch.getAmount() < maxStack
                             && itemSearch.getType() == item.getType()
@@ -82,15 +81,15 @@ public final class StackCommand implements CommandExecutor {
                         if (itemSearch.getAmount() > needed) {
                             item.setAmount(maxStack);
                             itemSearch.setAmount(itemSearch.getAmount() - needed);
+                            changed++;
                             i2++;
                             continue;
                         }
 
                         contents[i2] = null;
                         item.setAmount(item.getAmount() + itemSearch.getAmount());
-                        needed = maxStack - itemSearch.getAmount();
+                        needed -= itemSearch.getAmount();
                         changed++;
-
                     }
                     i2++;
                 }
